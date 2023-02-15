@@ -8,6 +8,7 @@ import { ROLES } from "../../config/roles"
 
 const USER_REGEX = /^[A-z]{3,20}$/
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 
 const NewUserForm = () => {
 
@@ -24,6 +25,8 @@ const NewUserForm = () => {
     const [validUsername, setValidUsername] = useState(false)
     const [password, setPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
+    const [email, setEmail] = useState('')
+    const [validEmail, setValidEmail] = useState(false)
     const [roles, setRoles] = useState(["Employee"])
     const [active, setActive] = useState(true)
 
@@ -36,10 +39,15 @@ const NewUserForm = () => {
     }, [password])
 
     useEffect(() => {
+        setValidEmail(EMAIL_REGEX.test(email))
+    }, [email])
+
+    useEffect(() => {
         console.log(`Success: ${isSuccess}`)
         if(isSuccess) {
             setUsername('')
             setPassword('')
+            setEmail('')
             setRoles([])
             navigate('/dash/users')
         }
@@ -47,6 +55,7 @@ const NewUserForm = () => {
 
     const onUsernameChanged = e => setUsername(e.target.value)
     const onPasswordChanged = e => setPassword(e.target.value)
+    const onEmailChanged = e => setEmail(e.target.value)
 
     const onRolesChanged = e => {
         const values = Array.from(
@@ -60,9 +69,9 @@ const NewUserForm = () => {
 
     const onSaveUserClicked = async (e) => {
         if (password) {
-            await addNewUser({ username, password, roles, active })
+            await addNewUser({ username, password, email, roles, active })
         } else {
-            await addNewUser({ username, roles, active })
+            await addNewUser({ username, roles,  email, active })
         }
     }
 
@@ -82,6 +91,7 @@ const NewUserForm = () => {
     const errClass = (isError) ? "errmsg" : "offscreen"
     const validUserClass = !validUsername ? 'form__input--incomplete' : ''
     const validPwdClass = password && !validPassword ? 'form__input--incomplete' : ''
+    const validEmailClass = !validEmail ? 'form__input--incomplete' : ''
     const validRolesClass = !Boolean(roles.length) ? 'form__input--incomplete' : ''
 
     const errContent = (error?.data?.message) ?? ''
@@ -92,7 +102,7 @@ const NewUserForm = () => {
 
             <form className="form" onSubmit={e => e.preventDefault()}>
                 <div className="form__title-row">
-                    <h2>Edit User</h2>
+                    <h2>New User - register</h2>
                     <div className="form__action-buttons">
                         <button
                             className="icon-button"
@@ -126,6 +136,20 @@ const NewUserForm = () => {
                     value={password}
                     onChange={onPasswordChanged}
                 />
+
+                <label className="form__label" htmlFor="password">
+                    Email: <span className="nowrap">For confirmation</span></label>
+
+                <input
+                    className={`form__input ${validEmailClass}`}
+                    id="email"
+                    name="email"
+                    type="text"
+                    autoComplete="off"
+                    value={email}
+                    onChange={onEmailChanged}
+                />
+
 
                 <label className="form__label form__checkbox-container" htmlFor="user-active">
                     ACTIVE:

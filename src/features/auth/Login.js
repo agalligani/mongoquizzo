@@ -8,7 +8,7 @@ import useTitle from '../../hooks/useTitle'
 import PulseLoader from 'react-spinners/PulseLoader'
 
 const Login = () => {
-    useTitle('Employee Login')
+    useTitle('Login')
 
     const userRef = useRef()
     const errRef = useRef()
@@ -56,6 +56,7 @@ const Login = () => {
     const handleUserInput = (e) => setUsername(e.target.value)
     const handlePwdInput = (e) => setPassword(e.target.value)
     const handleToggle = () => setPersist(prev => !prev)
+    const goToRegister = () => navigate("/register")
 
     const errClass = errMsg ? "errmsg" : "offscreen"
 
@@ -64,7 +65,7 @@ const Login = () => {
     const content = (
         <section className="public">
             <header>
-                <h1>Employee Login</h1>
+                <h1>Login</h1>
             </header>
             <main className="login">
                 <p ref={errRef} className={errClass} aria-live="assertive">{errMsg}</p>
@@ -92,7 +93,7 @@ const Login = () => {
                         required
                     />
                     <button className="form__submit-button">Sign In</button>
-                    <button className="form__register-button">Register</button>
+                    <button onClick={goToRegister} className="form__register-button">Register</button>
 
                     <label htmlFor="persist" className="form__persist">
                         <input
